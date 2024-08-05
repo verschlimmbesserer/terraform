@@ -1,0 +1,22 @@
+---
+# tasks file for terraform
+- name: Configure Hashicorp Repository
+  ansible.builtin.deb822_repository:
+    name: hashicorp
+    types: deb
+    uris: "{{ terraform_repository_url }}"
+    suites: '{{ ansible_distribution_release }}'
+    components: main
+    architectures: amd64
+    signed_by: "{{ terraform_repository_gpg_key }}"
+    state: present
+
+- name: Update Repositories
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install terraform
+  ansible.builtin.apt:
+    name: "{{ terraform_package }}"
+    state: "{{ terraform_state }}"
